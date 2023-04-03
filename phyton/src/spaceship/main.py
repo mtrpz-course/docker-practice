@@ -1,4 +1,4 @@
-from src.spaceship.app import make_app
-from src.spaceship.config import Settings
+from spaceship.app import make_app
+from spaceship.config import Settings
 
 app = make_app(Settings())
