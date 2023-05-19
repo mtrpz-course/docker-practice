@@ -7,6 +7,7 @@ from spaceship.routers import api, health
 
 
 # IT IS JUST A COOL COMMENT
+# IT IS MORE COOL COMMENT 'CAUSE IT IS LONGER :))
 def make_app(settings: Settings) -> FastAPI:
     app = FastAPI(
         debug=settings.debug,
