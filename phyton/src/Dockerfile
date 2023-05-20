@@ -1,5 +1,6 @@
-FROM python:slim-bullseye
+FROM python:alpine
 MAINTAINER Michael Chirozidi chirozidi.m@gmail.com
+RUN apk add --no-cache musl-dev g++ gcc lapack-dev
 WORKDIR /app
 COPY requirements/backend.in .
 RUN pip install --no-cache-dir -r backend.in
