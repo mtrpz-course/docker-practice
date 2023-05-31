@@ -1,10 +1,10 @@
 # docker-practice
 
 ## Navigation:
-1) [Python](PYTHON)
-2) [Go](GOLANG)
-3) [Kotlin](KOTLIN)
-4) [Conclusion](CONCLUSION)
+1) [Python](#python)
+2) [Go](#golang)
+3) [Kotlin](#kotlin)
+4) [Conclusion](#conclustion)
 
 ### PYTHON
 ------------
