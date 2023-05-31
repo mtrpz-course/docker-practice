@@ -79,7 +79,7 @@
  uvicorn[standard]==0.21.1
  pyproject.toml==0.0.10 
 ```
-  * **With Bullseye**
+ **On Bullseye**
 
 * Build: ```bash $ docker build . -t py-fastapi:5.0```
 * Run: ```bash $ docker run -p 8080:8080 --rm py-fastapi:5.0```
@@ -89,7 +89,8 @@
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/cfef91b2a31b82327f888ba1077ad43399a272c8)
 
 
-  * **With Alpine**
+ **On Alpine**
+ 
  ```Dockerfile
  FROM python:alpine
  MAINTAINER Michael Chirozidi chirozidi.m@gmail.com
@@ -232,6 +233,7 @@ fun Application.helloWorldJson(){
         }
     }
 }
+
 ```
 2) Dockerfile for mutli-stage building image
 ``` Dockerfile
