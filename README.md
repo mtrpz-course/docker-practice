@@ -244,3 +244,19 @@ ENTRYPOINT ["java","-jar","/server/kotlin-all.jar"]
 * Build size: 660.5MB
 * Description: Such a long build of the image is due to the fact that the build-system Gradle, after installing all dependencies, generates a special FAT JAR file for the successful operation of the server in runtime.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/f4e743327f48c637ace14f5fe720a8ccf203d2a6)
+
+------------
+### CONCLUSION
+
+After familiarizing myself with working with Docker, the following conclusions can be drawn:
+
+* *Docker is a powerful tool for managing containerized applications. It allows you to create, deploy, and manage application containers that provide an isolated environment for software execution.*
+* *Using Docker allows you to ensure the portability and consistency of the environment. You can create an image with your application and all dependencies, and then run it on any environment where Docker is installed. This avoids problems associated with configuration differences between different systems.*
+* *Docker allows you to deploy applications quickly and efficiently. You can easily install and run containers with applications, which allows you to speed up software development, testing, and deployment.*
+* *Docker allows you to create multi-stage builds, which makes it easier to optimize and reduce the size of images. You can divide the build process into several stages to minimize the number of dependencies and include only the necessary components in the final image.*
+* *The Docker community is active and growing. There are a large number of publicly available images and tools to help you work with Docker. You can find many resources, documentation, and examples online to help you learn and use Docker effectively.*
+
+
+**In general, working with Docker allows you to simplify the deployment and management of applications, provides portability and consistency of the environment, and allows you to speed up the development process. The choice between different types of images, such as Scratch and Distroless, depends on your needs and project requirements. With Docker, you can create an infrastructure that is easily scalable and maintainable, which contributes to the efficient operation of the software.**
+
+-----------------------
