@@ -42,6 +42,7 @@
 * Build size: 484MB (same)
 * Description: Faster build time because the base image `ubuntu:latest` was cached.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/78d7e9ca7868aad39d553cec22905c9d67f5448c)
+
 ------------
 3) Dockerfile optimization
 
@@ -60,6 +61,7 @@
 * Build size: 168MB
 * Description: First, the python dependency file is copied separately from other directory contents, dependencies are installed. Docker caches the layer with dependencies separately, so if the dependencies don't change, it will be used from the cache. Second, the basic image is more compact and do have neccessary packets only.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/4d4c67f0aed3cb083e92adb94083990bf577c6cb)
+
 ----------------------------
 4) Upgrading of `app.py` 
 
@@ -69,6 +71,7 @@
 * Build size: 168MB (same)
 * Description: Faster build time because the base image `python:slim-bullseye` was cached.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/4d4c67f0aed3cb083e92adb94083990bf577c6cb)
+
 ------------------
 5) NumPy
 ```bash
@@ -87,7 +90,6 @@
 * Build size: 168MB (same)
 * Description: More slowly build because new library was added
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/cfef91b2a31b82327f888ba1077ad43399a272c8)
-
 
  **On Alpine**
  
@@ -130,6 +132,7 @@
 * Build size: 837.42MB
 * Description: Minimal Dockerfile
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/ffc87006f562788cd691731f932d317fd9653af4)
+
 ---------
 2) Multi-stage building with Scratch
 
