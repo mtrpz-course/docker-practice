@@ -120,8 +120,8 @@
 * Build size: 837.42MB
 * Description: Minimal Dockerfile
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/ffc87006f562788cd691731f932d317fd9653af4)
-
-2) Multi-stage building
+---------
+2) Multi-stage building with Scratch
 
 ```Dockerfile
  FROM golang:latest AS builder
@@ -145,5 +145,102 @@
 * Description: First, an intermediate image is created with the Go dependencies, and the application code is compiled into a binary file. Then, a final image is created, and the HTML page from the intermediate image and the executable file are copied into it.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/ffc87006f562788cd691731f932d317fd9653af4)
 
+---------
+3) Multi-stage building with Distorless
 
+```Dockerfile
+ FROM golang:latest AS builder
+ MAINTAINER Michael Chirozidi chirozidi.m@gmail.com
+ WORKDIR /app
+ COPY go.mod go.sum ./
+ RUN go mod download
+ COPY . .
+ RUN go build -o build/fizzbuzz
+ FROM gcr.io/distroless/base
+ COPY --from=builder /app/build/fizzbuzz /
+ COPY --from=builder /app/templates/index.html /templates/
+ EXPOSE 8080
+ CMD ["./build/fizzbuzz", "serve"] 
+```
+* Build: $ docker build . -t golang:2.0
+* Run: $ docker run -p 8080:8080 --rm golang:2.0
+* Build time: 1.8s
+* Build size: 27MB
+* Description: In this case, we compile the executable file using the "go build" command, which uses dynamic libraries by default, unlike the previous image where it was necessary to compile a static binary file.
+* [Commit link](https://github.com/mtrpz-course/docker-practice/commit/e1c93204a4ca91fe7bca78f35d76ea23bec59f82)
 
+If we compare using a Scratch image and a Distroless image as the base, Scratch allows us to create a highly optimized and lightweight image that contains only the necessary components and dependencies. However, it requires manually installing all the dependencies and libraries inside the image, which takes time and expertise, and may not be the best choice during development.
+
+Distroless images are designed to be used with specific programming languages and frameworks such as Java, Python, or Node.js, and already include dependencies and libraries for those languages and frameworks. Therefore, if you don't want to deal with manually installing dependencies and libraries and prefer to use a ready-made image that already contains all the necessary components to run your program, a Distroless image can be the best choice.
+
+It should be noted that using a multi-stage build, regardless of the choice of the base image, is more optimal compared to using a golang-based image for the reasons mentioned earlier.
+
+------------
+### KOTLIN
+1) Code of simple server on Ktor framework for Kotlin language
+
+* Application.kt:
+```Kotlin
+fun main() {
+    embeddedServer(Netty, port = 8080, host = "localhost", module = Application::module)
+        .start(wait = true)
+}
+
+fun Application.module() {
+    configureSerialization()
+    configureRouting()
+}
+```
+* Serialization.kt:
+```Kotlin
+fun Application.configureSerialization() {
+    install(ContentNegotiation) {
+        json()
+    }
+    helloWorldJson()
+}
+```
+* Routing.kt: 
+```Kotlin
+fun Application.configureRouting() {
+    helloWorldRouting()
+}
+```
+* HelloWorldRemote.kt:
+```Kotlin
+fun Application.helloWorldRouting() {
+    routing {
+        get("/") {
+            call.respondText("Hello World!", ContentType.Text.Plain, HttpStatusCode.OK)
+        }
+    }
+}
+
+fun Application.helloWorldJson(){
+    routing {
+        get("/json/hello") {
+            call.respond(HttpStatusCode.OK, mapOf("hello" to "world"))
+        }
+    }
+}
+```
+2) Dockerfile for mutli-stage building image
+``` Dockerfile
+FROM gradle:7-jdk11 AS build
+COPY --chown=gradle:gradle . /app
+WORKDIR /app
+RUN gradle buildFatJar --no-daemon
+
+FROM openjdk:11
+EXPOSE 8080:8080
+RUN mkdir /server
+COPY --from=build /app/build/libs/*.jar /server/kotlin-all.jar
+ENTRYPOINT ["java","-jar","/server/kotlin-all.jar"]
+```
+
+* Build: $ docker build . -t kotlin:1.0
+* Run: $ docker run -p 8080:8080 --rm kotlin:1.0
+* Build time: 682.8s
+* Build size: 660.5MB
+* Description: Such a long build of the image is due to the fact that the build-system Gradle, after installing all dependencies, generates a special FAT JAR file for the successful operation of the server in runtime.
+* [Commit link](https://github.com/mtrpz-course/docker-practice/commit/f4e743327f48c637ace14f5fe720a8ccf203d2a6)
