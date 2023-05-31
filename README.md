@@ -2,9 +2,12 @@
 
 ## Navigation:
 1) [Python](#python)
-2) [Go](#golang)
-3) [Kotlin](#kotlin)
-4) [Conclusion](#conclusion)
+
+3) [Go](#golang)
+
+5) [Kotlin](#kotlin)
+
+7) [Conclusion](#conclusion)
 
 ### PYTHON
 ------------
@@ -24,8 +27,8 @@
  CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0","--port=8080"] 
 ```
 
-* Build: $ docker build . -t py-fastapi:1.0
-* Run: $ docker run -p 8080:8080 --rm py-fastapi:1.0
+* Build: ```bash $ docker build . -t py-fastapi:1.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm py-fastapi:1.0```
 * Build time: 29.2s
 * Build size: 484MB
 * Description: Regular unoptimized build.
@@ -33,8 +36,8 @@
 -------------
 2) Changing of `app.py`
 
-* Build: $ docker build . -t py-fastapi:2.0
-* Run: $ docker run -p 8080:8080 --rm py-fastapi:2.0
+* Build: ```bash $ docker build . -t py-fastapi:2.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm py-fastapi:2.0```
 * Build time: 8s
 * Build size: 484MB (same)
 * Description: Faster build time because the base image `ubuntu:latest` was cached.
@@ -51,8 +54,8 @@
  CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0", "--port=8080"] 
 ```
 
-* Build: $ docker build . -t py-fastapi:3.0
-* Run: $ docker run -p 8080:8080 --rm py-fastapi:3.0
+* Build: ```bash $ docker build . -t py-fastapi:3.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm py-fastapi:3.0```
 * Build time: 8.7s
 * Build size: 168MB
 * Description: First, the python dependency file is copied separately from other directory contents, dependencies are installed. Docker caches the layer with dependencies separately, so if the dependencies don't change, it will be used from the cache. Second, the basic image is more compact and do have neccessary packets only.
@@ -60,8 +63,8 @@
 ----------------------------
 4) Upgrading of `app.py` 
 
-* Build: $ docker build . -t py-fastapi:4.0
-* Run: $ docker run -p 8080:8080 --rm py-fastapi:4.0
+* Build: ```bash $ docker build . -t py-fastapi:4.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm py-fastapi:4.0```
 * Build time: 1.4s
 * Build size: 168MB (same)
 * Description: Faster build time because the base image `python:slim-bullseye` was cached.
@@ -78,8 +81,8 @@
 ```
   * **With Bullseye**
 
-* Build: $ docker build . -t py-fastapi:5.0
-* Run: $ docker run -p 8080:8080 --rm py-fastapi:5.0
+* Build: ```bash $ docker build . -t py-fastapi:5.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm py-fastapi:5.0```
 * Build time: 1.4s
 * Build size: 168MB (same)
 * Description: More slowly build because new library was added
@@ -98,8 +101,8 @@
  CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0", "--port=8080"]
  ```
 
-* Build: $ docker build . -t py-fastapi:5.0
-* Run: $ docker run -p 8080:8080 --rm py-fastapi:5.0
+* Build: ```bash $ docker build . -t py-fastapi:5.0```
+* Run: $ ```bash docker run -p 8080:8080 --rm py-fastapi:5.0```
 * Build time: 125.5s
 * Build size: 415MB
 * Description: At the build based on alpine, not all dependencies were installed for successful numpy build (I wanted to die during this struggle), so I added an instruction in the Dockerfile that installs the necessary dependencies (g++, gcc, musl-dev, ...). The library download resulted in long connection time and a large image size.
@@ -120,8 +123,8 @@
  EXPOSE 8080
  CMD ["./build/fizzbuzz", "serve"] 
 ```
-* Build: $ docker build . -t golang:1.0
-* Run: $ docker run -p 8080:8080 --rm golang:1.0
+* Build: ```bash $ docker build . -t golang:1.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm golang:1.0```
 * Build time: 137.7s
 * Build size: 837.42MB
 * Description: Minimal Dockerfile
@@ -144,8 +147,8 @@
  EXPOSE 8080
  CMD ["./build/fizzbuzz", "serve"] 
 ```
-* Build: $ docker build . -t golang:2.0
-* Run: $ docker run -p 8080:8080 --rm golang:2.0
+* Build: ```bash $ docker build . -t golang:2.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm golang:2.0```
 * Build time: 9.5s
 * Build size: 6.55MB
 * Description: First, an intermediate image is created with the Go dependencies, and the application code is compiled into a binary file. Then, a final image is created, and the HTML page from the intermediate image and the executable file are copied into it.
@@ -168,8 +171,8 @@
  EXPOSE 8080
  CMD ["./build/fizzbuzz", "serve"] 
 ```
-* Build: $ docker build . -t golang:2.0
-* Run: $ docker run -p 8080:8080 --rm golang:2.0
+* Build: ```bash $ docker build . -t golang:3.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm golang:3.0```
 * Build time: 1.8s
 * Build size: 27MB
 * Description: In this case, we compile the executable file using the "go build" command, which uses dynamic libraries by default, unlike the previous image where it was necessary to compile a static binary file.
@@ -244,8 +247,8 @@ COPY --from=build /app/build/libs/*.jar /server/kotlin-all.jar
 ENTRYPOINT ["java","-jar","/server/kotlin-all.jar"]
 ```
 
-* Build: $ docker build . -t kotlin:1.0
-* Run: $ docker run -p 8080:8080 --rm kotlin:1.0
+* Build: ```bash $ docker build . -t kotlin:1.0```
+* Run: ```bash $ docker run -p 8080:8080 --rm kotlin:1.0```
 * Build time: 682.8s
 * Build size: 660.5MB
 * Description: Such a long build of the image is due to the fact that the build-system Gradle, after installing all dependencies, generates a special FAT JAR file for the successful operation of the server in runtime.
