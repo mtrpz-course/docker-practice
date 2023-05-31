@@ -51,7 +51,7 @@
 * Build size: 168MB
 * Description: First, the python dependency file is copied separately from other directory contents, dependencies are installed. Docker caches the layer with dependencies separately, so if the dependencies don't change, it will be used from the cache. Second, the basic image is more compact and do have neccessary packets only.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/4d4c67f0aed3cb083e92adb94083990bf577c6cb)
-
+----------------------------
 4) Upgrading of `app.py` 
 
 * Build: $ docker build . -t py-fastapi:4.0
@@ -60,7 +60,7 @@
 * Build size: 168MB (same)
 * Description: Faster build time because the base image `python:slim-bullseye` was cached.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/4d4c67f0aed3cb083e92adb94083990bf577c6cb)
-
+------------------
 5) NumPy
 ```bash
  NumPy==1.24.3
@@ -81,15 +81,16 @@
 
 
   * **With Alpine**
-   ```Dockerfile
+ ```Dockerfile
  FROM python:alpine
  MAINTAINER Michael Chirozidi chirozidi.m@gmail.com
  RUN apk add --no-cache musl-dev g++ gcc lapack-dev
  WORKDIR /app
  COPY requirements/backend.in .
  RUN pip install --no-cache-dir -r backend.in
-COPY . .
-CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0", "--port=8080"]```
+ COPY . .
+ CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0", "--port=8080"]
+ ```
 
 * Build: $ docker build . -t py-fastapi:5.0
 * Run: $ docker run -p 8080:8080 --rm py-fastapi:5.0
@@ -98,7 +99,51 @@ CMD ["uvicorn", "spaceship.main:app", "--host=0.0.0.0", "--port=8080"]```
 * Description: At the build based on alpine, not all dependencies were installed for successful numpy build (I wanted to die during this struggle), so I added an instruction in the Dockerfile that installs the necessary dependencies (g++, gcc, musl-dev, ...). The library download resulted in long connection time and a large image size.
 * [Commit link](https://github.com/mtrpz-course/docker-practice/commit/f80afcbdf8ef22f4895c29596abb66a6c824efc8)
 
+----------
+### GOLANG 
 
+1) Default build
+```Dockerfile
+ FROM golang:latest
+ MAINTAINER Michael Chirozidi chirozidi.m@gmail.com
+ WORKDIR /app
+ COPY go.mod go.sum ./
+ RUN go mod download
+ COPY . .
+ RUN go build -o build/fizzbuzz
+ EXPOSE 8080
+ CMD ["./build/fizzbuzz", "serve"] 
+```
+* Build: $ docker build . -t golang:1.0
+* Run: $ docker run -p 8080:8080 --rm golang:1.0
+* Build time: 137.7s
+* Build size: 837.42MB
+* Description: Minimal Dockerfile
+* [Commit link](https://github.com/mtrpz-course/docker-practice/commit/ffc87006f562788cd691731f932d317fd9653af4)
+
+2) Multi-stage building
+
+```Dockerfile
+ FROM golang:latest AS builder
+ MAINTAINER Michael Chirozidi chirozidi.m@gmail.com
+ WORKDIR /app
+ COPY go.mod go.sum ./
+ RUN go mod download
+ COPY . .
+ RUN CGO_ENABLED=0 go build -ldflags "-w -s -extldflags '-static'" -o build/fizzbuzz
+ 
+ FROM scratch
+ COPY --from=builder /app/build/fizzbuzz /
+ COPY --from=builder /app/templates/index.html /templates/
+ EXPOSE 8080
+ CMD ["./build/fizzbuzz", "serve"] 
+```
+* Build: $ docker build . -t golang:2.0
+* Run: $ docker run -p 8080:8080 --rm golang:2.0
+* Build time: 9.5s
+* Build size: 6.55MB
+* Description: First, an intermediate image is created with the Go dependencies, and the application code is compiled into a binary file. Then, a final image is created, and the HTML page from the intermediate image and the executable file are copied into it.
+* [Commit link](https://github.com/mtrpz-course/docker-practice/commit/ffc87006f562788cd691731f932d317fd9653af4)
 
 
 
